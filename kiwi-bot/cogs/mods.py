@@ -8,7 +8,6 @@ from responses import responses
 from googlesearch import search
 from discord.ext.commands.core import has_permissions
 
-
 def get_quote():
   response = requests.get("https://zenquotes.io/api/random")
   json_data = json.loads(response.text)
@@ -53,6 +52,29 @@ class Mods(commands.Cog):
   async def kiwi(self, ctx, *, args):
     await ctx.send(random.choice(responses))
 
+  @commands.command()
+  async def classroom(self, ctx):
+    embed = discord.Embed(
+              title="Link to the Classroom",
+              colour=0x2859B8,
+              description = "https://classroom.google.com/u/3/h"
+          )
+    await ctx.send(embed = embed)
+
+  @commands.command(aliases = ['purge'])
+  @has_permissions(administrator = True)
+  async def clear(self, ctx, amount = 2):
+    await ctx.channel.purge(limit = amount)
+  @clear.error
+  async def clear_error(self, ctx, error):
+      if isinstance(error, commands.MissingPermissions):
+        embed = discord.Embed(
+              title="Lol",
+              colour=0x2859B8,
+              description="You don't even have perms for that!",
+        )
+        await ctx.send(embed = embed)
+    
   @commands.command()
   @has_permissions(administrator = True)
   async def ban(self, ctx, member: discord.Member, *, reason=None):
@@ -118,9 +140,15 @@ class Mods(commands.Cog):
     )
     embed.set_author(name ='Help')
     embed.add_field(name = '$kiwi', value = 'Returns random answer', inline = False)
-    embed.add_field(name = 'inspire', value = 'Returns inspirational quotes', inline = False)
+    embed.add_field(name = '$inspire', value = 'Returns inspirational quotes', inline = False)
     embed.add_field(name = 'Just Google', value = 'Returns googles first result', inline = False)
     embed.add_field(name = '$test', value = 'Returns exact same statement', inline = False)
+    embed.add_field(name = '$classroom', value = 'Returns invite link to classroom', inline = False)
+    embed.add_field(name = '$listCourses', value = 'list the courses in classroom of the domain admin', inline = False)
+    embed.add_field(name = '$addCourse', value = 'Creates the course with admin as its default teacher', inline = False)
+    embed.add_field(name = '$CreateCourseWork', value = 'Creates the classwork in the prescribed course', inline = False)
+    embed.add_field(name = '$listCourseWork', value = 'Shows the submissions of students in respective assignment', inline = False)
+    embed.add_field(name = '$CreateCourseWorkLink', value = 'Creates the classwork with a link in its description', inline = False)
     await ctx.send(embed = embed)
 
 def setup(bot):
